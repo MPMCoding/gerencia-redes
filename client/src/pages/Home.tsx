@@ -1,8 +1,407 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Menu, X, ChevronRight } from "lucide-react";
+import { Menu, X, ChevronRight, CheckCircle, XCircle } from "lucide-react";
 import { APP_TITLE } from "@/const";
+
+// Componentes de Jogos
+const BitErrorQuiz = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+
+  const questions = [
+    {
+      question: "O que é um erro em bit único?",
+      options: [
+        "Quando um bit é alterado de valor durante a transmissão",
+        "Quando múltiplos bits são alterados",
+        "Quando o sinal é enfraquecido",
+      ],
+      correct: 0,
+    },
+    {
+      question: "Qual técnica detecta erros em bit único?",
+      options: ["Código de Hamming", "FEC", "Retransmissão"],
+      correct: 0,
+    },
+    {
+      question: "O que é FEC?",
+      options: [
+        "Forward Error Correction - transmissão de bits extras",
+        "Fast Error Control",
+        "Frequency Error Correction",
+      ],
+      correct: 0,
+    },
+  ];
+
+  const handleAnswer = (index: number) => {
+    if (index === questions[currentQuestion].correct) {
+      setScore(score + 1);
+    }
+    setShowResult(true);
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setShowResult(false);
+    }
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setShowResult(false);
+  };
+
+  if (currentQuestion >= questions.length) {
+    return (
+      <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg">
+        <h4 className="font-bold text-lg mb-2">🎉 Quiz Concluído!</h4>
+        <p className="text-sm mb-4">Você acertou {score} de {questions.length} questões!</p>
+        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+          <div
+            className="bg-blue-500 h-2 rounded-full transition-all"
+            style={{ width: `${(score / questions.length) * 100}%` }}
+          ></div>
+        </div>
+        <Button onClick={resetQuiz} className="w-full">Tentar Novamente</Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg">
+      <h4 className="font-bold text-sm mb-3">🎮 Quiz: Erros em Bits</h4>
+      <p className="text-xs mb-4 font-semibold">{questions[currentQuestion].question}</p>
+      <div className="space-y-2 mb-4">
+        {questions[currentQuestion].options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => handleAnswer(index)}
+            disabled={showResult}
+            className={`w-full text-left p-3 rounded-lg text-xs transition-all ${
+              showResult
+                ? index === questions[currentQuestion].correct
+                  ? "bg-green-200 border-2 border-green-500"
+                  : "bg-red-200 border-2 border-red-500"
+                : "bg-white border border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+      {showResult && (
+        <Button onClick={nextQuestion} className="w-full text-xs">
+          {currentQuestion === questions.length - 1 ? "Ver Resultado" : "Próxima Questão"}
+        </Button>
+      )}
+    </div>
+  );
+};
+
+const CryptoChallenge = () => {
+  const [userAnswer, setUserAnswer] = useState("");
+  const [showHint, setShowHint] = useState(false);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+
+  const challenge = {
+    cipher: "KHOOR ZRUOG",
+    hint: "Use a cifra de César com deslocamento de 3",
+    answer: "HELLO WORLD",
+  };
+
+  const handleCheck = () => {
+    setIsCorrect(userAnswer.toUpperCase() === challenge.answer);
+  };
+
+  const handleReset = () => {
+    setUserAnswer("");
+    setIsCorrect(null);
+    setShowHint(false);
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-lg">
+      <h4 className="font-bold text-sm mb-3">🔐 Desafio: Quebre a Cifra</h4>
+      <p className="text-xs mb-3">Texto cifrado: <span className="font-mono bg-white p-2 rounded">{challenge.cipher}</span></p>
+      <input
+        type="text"
+        value={userAnswer}
+        onChange={(e) => setUserAnswer(e.target.value)}
+        placeholder="Digite o texto descriptografado"
+        className="w-full p-2 border border-gray-300 rounded-lg text-xs mb-3"
+        disabled={isCorrect !== null}
+      />
+      <div className="flex gap-2 mb-3">
+        <Button onClick={handleCheck} disabled={!userAnswer || isCorrect !== null} className="flex-1 text-xs">
+          Verificar
+        </Button>
+        <Button onClick={() => setShowHint(true)} variant="outline" className="flex-1 text-xs">
+          Dica
+        </Button>
+      </div>
+      {showHint && <p className="text-xs bg-yellow-100 p-2 rounded mb-3">{challenge.hint}</p>}
+      {isCorrect !== null && (
+        <div className={`p-3 rounded-lg text-xs flex items-center gap-2 ${isCorrect ? "bg-green-200" : "bg-red-200"}`}>
+          {isCorrect ? <CheckCircle size={16} /> : <XCircle size={16} />}
+          {isCorrect ? "✓ Correto! Você quebrou a cifra!" : "✗ Tente novamente!"}
+        </div>
+      )}
+      {isCorrect !== null && <Button onClick={handleReset} className="w-full mt-3 text-xs">Tentar Novamente</Button>}
+    </div>
+  );
+};
+
+const ThroughputCalculator = () => {
+  const [volumeGB, setVolumeGB] = useState("");
+  const [timeSeconds, setTimeSeconds] = useState("");
+  const [result, setResult] = useState<string | null>(null);
+
+  const calculate = () => {
+    if (volumeGB && timeSeconds) {
+      const volumeMB = parseFloat(volumeGB) * 1024;
+      const throughput = (volumeMB / parseFloat(timeSeconds)).toFixed(2);
+      setResult(throughput);
+    }
+  };
+
+  const reset = () => {
+    setVolumeGB("");
+    setTimeSeconds("");
+    setResult(null);
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg">
+      <h4 className="font-bold text-sm mb-3">⚡ Calculadora: Vazão (Throughput)</h4>
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-semibold">Volume (GB):</label>
+          <input
+            type="number"
+            value={volumeGB}
+            onChange={(e) => setVolumeGB(e.target.value)}
+            placeholder="Ex: 1"
+            className="w-full p-2 border border-gray-300 rounded-lg text-xs mt-1"
+            disabled={result !== null}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold">Tempo (segundos):</label>
+          <input
+            type="number"
+            value={timeSeconds}
+            onChange={(e) => setTimeSeconds(e.target.value)}
+            placeholder="Ex: 10"
+            className="w-full p-2 border border-gray-300 rounded-lg text-xs mt-1"
+            disabled={result !== null}
+          />
+        </div>
+        <Button onClick={calculate} disabled={!volumeGB || !timeSeconds || result !== null} className="w-full text-xs">
+          Calcular
+        </Button>
+      </div>
+      {result && (
+        <div className="mt-4 p-3 bg-white rounded-lg">
+          <p className="text-xs font-semibold mb-2">Resultado:</p>
+          <p className="text-sm font-bold text-green-600">{result} MB/s</p>
+          <Button onClick={reset} variant="outline" className="w-full mt-3 text-xs">Novo Cálculo</Button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const LatencyCalculator = () => {
+  const [packetSize, setPacketSize] = useState("");
+  const [transmissionSpeed, setTransmissionSpeed] = useState("");
+  const [distance, setDistance] = useState("");
+  const [propagationSpeed, setPropagationSpeed] = useState("200000");
+  const [result, setResult] = useState<string | null>(null);
+
+  const calculate = () => {
+    if (packetSize && transmissionSpeed && distance) {
+      const transmissionTime = parseFloat(packetSize) / parseFloat(transmissionSpeed);
+      const propagationTime = parseFloat(distance) / parseFloat(propagationSpeed);
+      const totalLatency = (transmissionTime + propagationTime) * 1000; // em ms
+      setResult(totalLatency.toFixed(3));
+    }
+  };
+
+  const reset = () => {
+    setPacketSize("");
+    setTransmissionSpeed("");
+    setDistance("");
+    setResult(null);
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg">
+      <h4 className="font-bold text-sm mb-3">⏱️ Calculadora: Latência</h4>
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-semibold">Tamanho do Pacote (bits):</label>
+          <input
+            type="number"
+            value={packetSize}
+            onChange={(e) => setPacketSize(e.target.value)}
+            placeholder="Ex: 10000"
+            className="w-full p-2 border border-gray-300 rounded-lg text-xs mt-1"
+            disabled={result !== null}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold">Velocidade de Transmissão (bps):</label>
+          <input
+            type="number"
+            value={transmissionSpeed}
+            onChange={(e) => setTransmissionSpeed(e.target.value)}
+            placeholder="Ex: 1000000"
+            className="w-full p-2 border border-gray-300 rounded-lg text-xs mt-1"
+            disabled={result !== null}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold">Distância (km):</label>
+          <input
+            type="number"
+            value={distance}
+            onChange={(e) => setDistance(e.target.value)}
+            placeholder="Ex: 1000"
+            className="w-full p-2 border border-gray-300 rounded-lg text-xs mt-1"
+            disabled={result !== null}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold">Velocidade de Propagação (km/s):</label>
+          <input
+            type="number"
+            value={propagationSpeed}
+            onChange={(e) => setPropagationSpeed(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-lg text-xs mt-1"
+            disabled={result !== null}
+          />
+        </div>
+        <Button onClick={calculate} disabled={!packetSize || !transmissionSpeed || !distance || result !== null} className="w-full text-xs">
+          Calcular
+        </Button>
+      </div>
+      {result && (
+        <div className="mt-4 p-3 bg-white rounded-lg">
+          <p className="text-xs font-semibold mb-2">Latência Total:</p>
+          <p className="text-sm font-bold text-orange-600">{result} ms</p>
+          <Button onClick={reset} variant="outline" className="w-full mt-3 text-xs">Novo Cálculo</Button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const AvailabilityQuiz = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+
+  const questions = [
+    {
+      question: "O que significa MTTF?",
+      options: [
+        "Mean Time To Failure",
+        "Mean Time To Fix",
+        "Maximum Time To Failure",
+      ],
+      correct: 0,
+    },
+    {
+      question: "Qual fórmula calcula a disponibilidade?",
+      options: [
+        "D = MTTF / (MTTF + MTTR)",
+        "D = MTTR / MTTF",
+        "D = MTTF * MTTR",
+      ],
+      correct: 0,
+    },
+    {
+      question: "Se MTTF=8000h e MTTR=36h, qual é a disponibilidade?",
+      options: [
+        "99,5%",
+        "95,5%",
+        "98,5%",
+      ],
+      correct: 0,
+    },
+  ];
+
+  const handleAnswer = (index: number) => {
+    if (index === questions[currentQuestion].correct) {
+      setScore(score + 1);
+    }
+    setShowResult(true);
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setShowResult(false);
+    }
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setShowResult(false);
+  };
+
+  if (currentQuestion >= questions.length) {
+    return (
+      <div className="bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg">
+        <h4 className="font-bold text-lg mb-2">🎉 Quiz Concluído!</h4>
+        <p className="text-sm mb-4">Você acertou {score} de {questions.length} questões!</p>
+        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+          <div
+            className="bg-indigo-500 h-2 rounded-full transition-all"
+            style={{ width: `${(score / questions.length) * 100}%` }}
+          ></div>
+        </div>
+        <Button onClick={resetQuiz} className="w-full">Tentar Novamente</Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg">
+      <h4 className="font-bold text-sm mb-3">🎮 Quiz: Disponibilidade</h4>
+      <p className="text-xs mb-4 font-semibold">{questions[currentQuestion].question}</p>
+      <div className="space-y-2 mb-4">
+        {questions[currentQuestion].options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => handleAnswer(index)}
+            disabled={showResult}
+            className={`w-full text-left p-3 rounded-lg text-xs transition-all ${
+              showResult
+                ? index === questions[currentQuestion].correct
+                  ? "bg-green-200 border-2 border-green-500"
+                  : "bg-red-200 border-2 border-red-500"
+                : "bg-white border border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+      {showResult && (
+        <Button onClick={nextQuestion} className="w-full text-xs">
+          {currentQuestion === questions.length - 1 ? "Ver Resultado" : "Próxima Questão"}
+        </Button>
+      )}
+    </div>
+  );
+};
 
 const sections = [
   {
@@ -20,7 +419,7 @@ const sections = [
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
           <p className="text-xs font-semibold text-blue-900">💡 Dica:</p>
           <p className="text-xs text-blue-800 mt-1">
-            Use o menu lateral para navegar entre os tópicos e acompanhe os slides da apresentação simultaneamente.
+            Use o menu lateral para navegar entre os tópicos e acompanhe os slides da apresentação simultaneamente. Teste os jogos interativos para aprender ainda mais!
           </p>
         </div>
       </div>
@@ -70,6 +469,8 @@ const sections = [
             <div><strong>MTTR</strong> = Tempo Médio para Reparos (Mean Time To Repair)</div>
           </div>
         </div>
+
+        <BitErrorQuiz />
       </div>
     ),
   },
@@ -138,6 +539,8 @@ const sections = [
             <li>• Detectar dispositivos vulneráveis ou infectados</li>
           </ul>
         </div>
+
+        <CryptoChallenge />
       </div>
     ),
   },
@@ -205,6 +608,8 @@ const sections = [
           </div>
           <p className="text-xs text-gray-600 mt-2">Rs = Taxa de envio | Rc = Taxa de recebimento</p>
         </div>
+
+        <ThroughputCalculator />
       </div>
     ),
   },
@@ -276,6 +681,8 @@ const sections = [
             Quando pacotes chegam fora de ordem, podem ser considerados como perdidos, afetando especialmente VoIP e vídeo.
           </p>
         </div>
+
+        <LatencyCalculator />
       </div>
     ),
   },
@@ -342,6 +749,8 @@ const sections = [
             <div>• <strong>Largura de Banda:</strong> Capacidade disponível</div>
           </div>
         </div>
+
+        <AvailabilityQuiz />
       </div>
     ),
   },

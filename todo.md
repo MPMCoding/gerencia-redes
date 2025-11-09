@@ -43,3 +43,11 @@
 - [x] Otimizar padding e margem para telas pequenas
 - [x] Ajustar tamanho de fontes para melhor legibilidade
 - [x] Melhorar espaçamento de conteúdo em mobile
+
+## Jogos Educativos Interativos
+
+- [x] Jogo 1: Quiz sobre Erros em Bits (Leonardo)
+- [x] Jogo 2: Desafio de Criptografia - Quebra-cabeça (Daniel)
+- [x] Jogo 3: Calculadora de Vazão Interativa (Danilo)
+- [x] Jogo 4: Calculadora de Latência com Simulação (Yan)
+- [x] Jogo 5: Quiz sobre Disponibilidade (Matheus)
