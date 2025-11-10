@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Menu, X, ChevronRight, CheckCircle, XCircle } from "lucide-react";
+import { Menu, X, ChevronRight, CheckCircle, XCircle, Play } from "lucide-react";
 import { APP_TITLE } from "@/const";
 
 // Componentes de Jogos
@@ -9,6 +9,7 @@ const BitErrorQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [quizFinished, setQuizFinished] = useState(false);
 
   const questions = [
     {
@@ -47,6 +48,8 @@ const BitErrorQuiz = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setShowResult(false);
+    } else {
+      setQuizFinished(true);
     }
   };
 
@@ -54,9 +57,10 @@ const BitErrorQuiz = () => {
     setCurrentQuestion(0);
     setScore(0);
     setShowResult(false);
+    setQuizFinished(false);
   };
 
-  if (currentQuestion >= questions.length) {
+  if (quizFinished) {
     return (
       <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg">
         <h4 className="font-bold text-lg mb-2">🎉 Quiz Concluído!</h4>
@@ -305,6 +309,7 @@ const AvailabilityQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [quizFinished, setQuizFinished] = useState(false);
 
   const questions = [
     {
@@ -347,6 +352,8 @@ const AvailabilityQuiz = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setShowResult(false);
+    } else {
+      setQuizFinished(true);
     }
   };
 
@@ -354,9 +361,10 @@ const AvailabilityQuiz = () => {
     setCurrentQuestion(0);
     setScore(0);
     setShowResult(false);
+    setQuizFinished(false);
   };
 
-  if (currentQuestion >= questions.length) {
+  if (quizFinished) {
     return (
       <div className="bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg">
         <h4 className="font-bold text-lg mb-2">🎉 Quiz Concluído!</h4>
@@ -751,6 +759,196 @@ const sections = [
         </div>
 
         <AvailabilityQuiz />
+      </div>
+    ),
+  },
+  {
+    id: "wireshark",
+    title: "Wireshark e Hercules",
+    presenter: "Eric",
+    content: (
+      <div className="space-y-4">
+        <div>
+          <h3 className="font-semibold text-sm mb-2">Introdução</h3>
+          <p className="text-xs leading-relaxed">
+            Este guia detalha como utilizar o Wireshark para capturar e analisar o tráfego de rede gerado pelo Hercules SETUP utility, com foco em testes de comunicação TCP e UDP em um ambiente local (localhost). Abordaremos desde a configuração do ambiente até a análise prática dos pacotes, permitindo uma compreensão clara da comunicação entre aplicações na mesma máquina.
+          </p>
+        </div>
+
+
+        <div>
+          <h3 className="font-semibold text-sm mb-2">Pré-requisitos</h3>
+          <p className="text-xs leading-relaxed mb-2">Para seguir este guia, você precisará dos seguintes softwares instalados:</p>
+          <ul className="text-xs space-y-1 ml-3">
+            <li>• <strong>Wireshark:</strong> Versão 3.0 ou superior. A instalação padrão no Windows inclui o Npcap, que é essencial para a captura de tráfego local.</li>
+            <li>• <strong>Hercules SETUP utility:</strong> A versão mais recente pode ser baixada gratuitamente no site do desenvolvedor.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-sm mb-2">O Desafio: Captura de Tráfego Localhost</h3>
+          <p className="text-xs leading-relaxed mb-2">
+            Capturar tráfego de rede que se origina e termina na mesma máquina (localhost, 127.0.0.1) apresenta um desafio particular, especialmente no Windows. Por padrão, o sistema operacional otimiza essa comunicação, não a enviando para as interfaces de rede físicas. Portanto, o Wireshark não consegue capturá-la sem um componente especial.
+          </p>
+          <div className="bg-orange-50 p-3 rounded text-xs space-y-2">
+            <div><strong>No Windows:</strong> A solução é o Npcap, um driver de captura de pacotes que cria uma interface de loopback virtual. O Wireshark utiliza essa interface para "enxergar" o tráfego localhost.</div>
+            <div><strong>No Linux e macOS:</strong> Esses sistemas operacionais possuem uma interface de loopback nativa (lo no Linux, lo0 no macOS), tornando a captura de tráfego local um processo direto.</div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-sm mb-2">Ferramentas Utilizadas</h3>
+          <div className="space-y-2">
+            <div className="bg-gray-50 p-3 rounded">
+              <h4 className="font-semibold text-xs mb-1">Wireshark</h4>
+              <p className="text-xs text-gray-700">
+                É o analisador de protocolos de rede mais utilizado no mundo. Permite capturar e inspecionar o tráfego que passa por uma interface de rede em tempo real, decodificando os pacotes de diversos protocolos.
+              </p>
+            </div>
+            <div className="bg-gray-50 p-3 rounded">
+              <h4 className="font-semibold text-xs mb-1">Hercules SETUP Utility</h4>
+              <p className="text-xs text-gray-700">
+                É um utilitário multifuncional que atua como terminal para portas seriais (RS-232/485), e também como cliente e servidor para protocolos TCP e UDP. É uma ferramenta extremamente útil para testes e depuração de comunicação de rede.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-sm mb-2">Configurando o Ambiente de Captura</h3>
+          <div className="space-y-3">
+            <div className="bg-blue-50 p-3 rounded">
+              <h4 className="font-semibold text-xs mb-2">No Windows</h4>
+              <ol className="text-xs space-y-1 ml-3 list-decimal">
+                <li>Inicie o Wireshark como administrador para garantir que todas as interfaces sejam listadas.</li>
+                <li>Na tela inicial, localize a interface chamada "Adapter for loopback traffic capture". Este é o adaptador virtual criado pelo Npcap.</li>
+                <li>Selecione esta interface para iniciar a captura.</li>
+              </ol>
+            </div>
+            <div className="bg-green-50 p-3 rounded">
+              <h4 className="font-semibold text-xs mb-2">No Linux / macOS</h4>
+              <ol className="text-xs space-y-1 ml-3 list-decimal">
+                <li>Inicie o Wireshark (pode ser necessário usar sudo no Linux).</li>
+                <li>Na lista de interfaces, selecione a interface de loopback, que geralmente é nomeada lo (Linux) ou lo0 (macOS).</li>
+                <li>Inicie a captura.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-sm mb-2">Cenários Práticos</h3>
+          <p className="text-xs leading-relaxed mb-3">Agora, vamos simular a comunicação entre duas instâncias do Hercules e capturar o tráfego com o Wireshark.</p>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-sm mb-2">Cenário 1: Cliente-Servidor TCP</h3>
+          <p className="text-xs leading-relaxed mb-2">
+            Neste cenário, uma instância do Hercules atuará como um servidor TCP e a outra como um cliente TCP.
+          </p>
+          <div className="bg-blue-50 p-3 rounded text-xs space-y-3">
+            <div>
+              <strong>Passo 1: Configurar o Servidor TCP no Hercules</strong>
+              <ol className="text-xs space-y-1 ml-3 mt-1 list-decimal">
+                <li>Abra o Hercules.</li>
+                <li>Vá para a aba "TCP Server".</li>
+                <li>No campo "Port", digite uma porta para o servidor escutar, por exemplo, 5000.</li>
+                <li>Clique em "Listen".</li>
+                <li>O status do servidor mudará para "Listening on port 5000".</li>
+              </ol>
+            </div>
+            <div>
+              <strong>Passo 2: Configurar o Cliente TCP no Hercules</strong>
+              <ol className="text-xs space-y-1 ml-3 mt-1 list-decimal">
+                <li>Abra uma segunda instância do Hercules.</li>
+                <li>Vá para a aba "TCP Client".</li>
+                <li>Em "Module IP", digite 127.0.0.1 (o endereço do seu localhost).</li>
+                <li>Em "Port", digite a mesma porta do servidor: 5000.</li>
+                <li>Clique em "Connect".</li>
+              </ol>
+            </div>
+            <div>
+              <strong>Passo 3: Capturar e Analisar o Tráfego</strong>
+              <ol className="text-xs space-y-1 ml-3 mt-1 list-decimal">
+                <li>No Wireshark, inicie a captura na interface de loopback, como descrito na seção anterior.</li>
+                <li>No Hercules (cliente), digite uma mensagem no campo de envio e clique em "Send".</li>
+                <li>Observe que a mensagem aparece na janela de dados recebidos do Hercules (servidor).</li>
+                <li>Pare a captura no Wireshark.</li>
+              </ol>
+            </div>
+            <div className="bg-white p-2 rounded mt-2">
+              <strong className="text-xs">Análise no Wireshark:</strong>
+              <ul className="text-xs space-y-1 ml-3 mt-1">
+                <li>• <strong>Filtro:</strong> Para facilitar a visualização, use o filtro tcp.port == 5000</li>
+                <li>• <strong>Handshake:</strong> Você verá o handshake de três vias do TCP (SYN, SYN-ACK, ACK) quando a conexão foi estabelecida.</li>
+                <li>• <strong>Transmissão de Dados:</strong> Pacotes com a flag PSH (Push) conterão os dados que você enviou.</li>
+                <li>• <strong>Finalização:</strong> Ao fechar a conexão, você verá os pacotes de finalização (FIN, ACK).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-sm mb-2">Cenário 2: Comunicação UDP</h3>
+          <p className="text-xs leading-relaxed mb-2">
+            Agora, vamos testar a comunicação UDP, que não estabelece uma conexão formal.
+          </p>
+          <div className="bg-green-50 p-3 rounded text-xs space-y-3">
+            <div>
+              <strong>Passo 1: Configurar as Instâncias do Hercules para UDP</strong>
+              <ol className="text-xs space-y-1 ml-3 mt-1 list-decimal">
+                <li>Abra duas instâncias do Hercules.</li>
+                <li>Em ambas, vá para a aba "UDP".</li>
+                <li>Instância 1 (Servidor):
+                  <ul className="text-xs space-y-1 ml-3 mt-1">
+                    <li>• Module IP: 127.0.0.1</li>
+                    <li>• Port: 6001 (porta de destino)</li>
+                    <li>• Local Port: 6000 (porta de escuta)</li>
+                  </ul>
+                </li>
+                <li>Instância 2 (Cliente):
+                  <ul className="text-xs space-y-1 ml-3 mt-1">
+                    <li>• Module IP: 127.0.0.1</li>
+                    <li>• Port: 6000 (porta de destino)</li>
+                    <li>• Local Port: 6001 (porta de escuta)</li>
+                  </ul>
+                </li>
+              </ol>
+            </div>
+            <div>
+              <strong>Passo 2: Capturar e Analisar o Tráfego</strong>
+              <ol className="text-xs space-y-1 ml-3 mt-1 list-decimal">
+                <li>Inicie a captura no Wireshark na interface de loopback.</li>
+                <li>Em qualquer uma das instâncias do Hercules, envie uma mensagem.</li>
+                <li>A mensagem aparecerá na outra instância.</li>
+                <li>Pare a captura no Wireshark.</li>
+              </ol>
+            </div>
+            <div className="bg-white p-2 rounded mt-2">
+              <strong className="text-xs">Análise no Wireshark:</strong>
+              <ul className="text-xs space-y-1 ml-3 mt-1">
+                <li>• <strong>Filtro:</strong> Use o filtro udp.port == 6000 || udp.port == 6001</li>
+                <li>• <strong>Datagramas:</strong> Você verá os pacotes UDP sendo enviados diretamente, sem qualquer handshake. Cada pacote é um datagrama independente.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-sm mb-2">Dicas de Análise no Wireshark</h3>
+          <ul className="text-xs space-y-2 ml-3">
+                <li>• <strong>Seguir Fluxo TCP:</strong> Clique com botão direito em um pacote TCP e selecione "Follow &gt; TCP Stream". Isso abrirá uma nova janela mostrando toda a conversa entre cliente e servidor de forma legível.</li>
+            <li>• <strong>Colorização:</strong> O Wireshark usa cores para destacar diferentes tipos de tráfego. Por padrão, verde claro é para HTTP, azul claro para DNS e azul escuro para TCP.</li>
+            <li>• <strong>Detalhes do Pacote:</strong> Clique em um pacote para ver todos os detalhes das camadas de rede, desde o frame físico até a camada de aplicação.</li>
+          </ul>
+        </div>
+
+        <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
+          <h3 className="font-semibold text-xs mb-2">📝 Conclusão</h3>
+          <p className="text-xs text-gray-700">
+            A integração entre o Wireshark e o Hercules cria um poderoso ambiente de aprendizado e depuração para comunicação de rede. Ao configurar corretamente a captura de tráfego localhost com o Npcap (no Windows) ou usando as interfaces nativas (Linux/macOS), é possível visualizar em detalhes os protocolos TCP e UDP em ação, validando o comportamento de aplicações cliente-servidor e aprofundando o conhecimento sobre os fundamentos de redes de computadores.
+          </p>
+        </div>
       </div>
     ),
   },

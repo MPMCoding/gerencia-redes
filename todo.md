@@ -51,3 +51,11 @@
 - [x] Jogo 3: Calculadora de Vazão Interativa (Danilo)
 - [x] Jogo 4: Calculadora de Latência com Simulação (Yan)
 - [x] Jogo 5: Quiz sobre Disponibilidade (Matheus)
+
+## Correções e Novas Funcionalidades
+
+- [x] Corrigir botão "Ver Resultado" nos quizzes (BitErrorQuiz e AvailabilityQuiz)
+- [x] Adicionar seção 6: Wireshark e Hercules (Eric)
+  - [x] Conteúdo sobre captura de tráfego de rede
+  - [x] Cenários práticos TCP/UDP
+  - [x] Placeholder para vídeo do Eric
